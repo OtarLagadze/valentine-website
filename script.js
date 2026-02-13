@@ -4,27 +4,43 @@ var startScreen = document.getElementById("startScreen");
 var startButton = document.getElementById("startButton");
 var hasStarted = false;
 
-startButton.addEventListener("click", function() {
+console.log("Start button element:", startButton);
+console.log("Start screen element:", startScreen);
+
+startButton.addEventListener("click", function(e) {
+    console.log("Heart button clicked!");
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!hasStarted) {
         hasStarted = true;
+        console.log("Starting sequence...");
         
         // Fade out start screen
         startScreen.style.opacity = "0";
+        startScreen.style.pointerEvents = "none";
         
         setTimeout(function() {
             startScreen.style.display = "none";
+            console.log("Start screen hidden");
         }, 500);
         
         // Start the music
         if (backgroundMusic) {
             backgroundMusic.volume = 0.3;
             backgroundMusic.muted = false;
-            backgroundMusic.play().catch(function(error) {
-                console.log("Error playing music:", error);
-            });
+            var playPromise = backgroundMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    console.log("Music started");
+                }).catch(function(error) {
+                    console.log("Error playing music:", error);
+                });
+            }
         }
         
         // Start the animation loop
+        console.log("Starting animation loop");
         window.requestAnimationFrame(draw);
     }
 });
@@ -84,20 +100,10 @@ const button = document.getElementById("valentinesButton");
 button.addEventListener("click", () => {
   if (button.textContent === "Click Me! ❤") {
     button.textContent = "loading...";
-    fetch('send_mail.php')
-      .then(response => {
-        if (response.ok) {
-          button.textContent = "Check Your Email 🙃";
-        } else {
-          console.error('Failed to send email');
-          button.textContent = "Error 😞";
-        }
-      })
-      .catch(error => {
-        // Handle network errors or other issues
-        console.error('Error:', error);
-        button.textContent = "Error 😞";
-      });
+    // Simulate a successful action with a delay
+    setTimeout(function() {
+      button.textContent = "� Thank You! �";
+    }, 1500);
   }
 });
 

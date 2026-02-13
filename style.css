@@ -24,6 +24,7 @@ canvas {
     z-index: 1000;
     opacity: 1;
     transition: opacity 0.5s ease-out;
+    pointer-events: auto;
 }
 
 #startButton {
@@ -37,6 +38,7 @@ canvas {
     animation: heartBeat 1.5s ease-in-out infinite;
     color: white;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 100, 130, 0.4);
+    pointer-events: auto;
 }
 
 #startButton:hover {
