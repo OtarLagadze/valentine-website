@@ -1,3 +1,34 @@
+// Start button and music setup
+var backgroundMusic = document.getElementById("backgroundMusic");
+var startScreen = document.getElementById("startScreen");
+var startButton = document.getElementById("startButton");
+var hasStarted = false;
+
+startButton.addEventListener("click", function() {
+    if (!hasStarted) {
+        hasStarted = true;
+        
+        // Fade out start screen
+        startScreen.style.opacity = "0";
+        
+        setTimeout(function() {
+            startScreen.style.display = "none";
+        }, 500);
+        
+        // Start the music
+        if (backgroundMusic) {
+            backgroundMusic.volume = 0.3;
+            backgroundMusic.muted = false;
+            backgroundMusic.play().catch(function(error) {
+                console.log("Error playing music:", error);
+            });
+        }
+        
+        // Start the animation loop
+        window.requestAnimationFrame(draw);
+    }
+});
+
 var canvas = document.getElementById("starfield");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -77,8 +108,8 @@ function drawTextWithLineBreaks(lines, x, y, fontSize, lineHeight) {
 }
 
 function drawText() {
-    var fontSize = Math.min(30, window.innerWidth / 24); // Adjust font size based on screen width
-    var lineHeight = 8;
+    var fontSize = Math.min(50, window.innerWidth / 16); // Increased from 30 to 50 - larger text
+    var lineHeight = 15; // Increased from 8 to 15 for better spacing
 
     context.font = fontSize + "px Comic Sans MS";
     context.textAlign = "center";
@@ -89,134 +120,166 @@ function drawText() {
     context.shadowOffsetX = 0;
     context.shadowOffsetY = 0;
 
-    if(frameNumber < 250){
+    // Fast fades: 80 frames fade in, long display time, 80 frames fade out
+    // Opacity increment for fast fades: 1/80 = 0.0125
+    
+    // Text 1: 3 lines, display 120 frames (total 280)
+    if(frameNumber < 80){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("ყოველ დილით ვიღვიძებ და ვერ ვიჯერებ, თუ რამდენად იღბლიანი ვარ", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
+        drawTextWithLineBreaks(["ყოველ დილით ვიღვიძებ", "და ვერ ვიჯერებ,", "თუ რამდენად იღბლიანი ვარ"], canvas.width/2, canvas.height/2 - 40, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
     }
-    //fades out the text by decreasing the opacity
-    if(frameNumber >= 250 && frameNumber < 500){
+    if(frameNumber >= 80 && frameNumber < 200){
         context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("ყოველ დილით ვიღვიძებ და ვერ ვიჯერებ, თუ რამდენად იღბლიანი ვარ", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
+        drawTextWithLineBreaks(["ყოველ დილით ვიღვიძებ", "და ვერ ვიჯერებ,", "თუ რამდენად იღბლიანი ვარ"], canvas.width/2, canvas.height/2 - 40, fontSize, lineHeight);
+    }
+    if(frameNumber >= 200 && frameNumber < 280){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["ყოველ დილით ვიღვიძებ", "და ვერ ვიჯერებ,", "თუ რამდენად იღბლიანი ვარ"], canvas.width/2, canvas.height/2 - 40, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
     }
 
-    //needs this if statement to reset the opacity before next statement on canvas
-    if(frameNumber == 500){
+    if(frameNumber == 280){
         opacity = 0;
-    }
-    if(frameNumber > 500 && frameNumber < 750){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-
-        if (window.innerWidth < 600) {           //shortens long sentence for mobile screens
-            drawTextWithLineBreaks(["მილიონობით ვარსკვლავებსა", "და გალაქტიკებს შორის"], canvas.width / 2, canvas.height / 2, fontSize, lineHeight);
-        } else {
-            context.fillText("მილიონობით ვარსკვლავებსა და გალაქტიკებს შორის", canvas.width/2, canvas.height/2);
-        }
-
-        opacity = opacity + 0.01;
-    }
-    if(frameNumber >= 750 && frameNumber < 1000){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        
-        if (window.innerWidth < 600) {
-            drawTextWithLineBreaks(["მილიონობით ვარსკვლავებსა", "და გალაქტიკებს შორის"], canvas.width / 2, canvas.height / 2, fontSize, lineHeight);
-        } else {
-            context.fillText("მილიონობით ვარსკვლავებსა და გალაქტიკებს შორის", canvas.width/2, canvas.height/2);
-        }
-
-        opacity = opacity - 0.01;
-    }
-
-    if(frameNumber == 1000){
-        opacity = 0;
-    }
-    if(frameNumber > 1000 && frameNumber < 1250){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("რომ ვარ ცოცხალი და მეძლევა შანსი ამ სიცოცხლის შენთან გატარებისა", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
-    }
-    if(frameNumber >= 1250 && frameNumber < 1500){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("რომ ვარ ცოცხალი და მეძლევა შანსი ამ სიცოცხლის შენთან გატარებისა", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
-    }
-
-    if(frameNumber == 1500){
-        opacity = 0;
-    }
-    if(frameNumber > 1500 && frameNumber < 1750){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("იმდენად დაუჯერებელ და წარმოუდგენელ სიზმარს გავს", canvas.width/2, canvas.height/2);
-        opacity = opacity + 0.01;
-    }
-    if(frameNumber >= 1750 && frameNumber < 2000){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-        context.fillText("იმდენად დაუჯერებელ და წარმოუდგენელ სიზმარს გავს", canvas.width/2, canvas.height/2);
-        opacity = opacity - 0.01;
-    }
-
-    if(frameNumber == 2000){
-        opacity = 0;
-    }
-    if(frameNumber > 2000 && frameNumber < 2250){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-
-        if (window.innerWidth < 600) {
-            drawTextWithLineBreaks(["და მაინც, აქ ვარ და მიხარია რომ მაქვს", "შესაძლებლობა წამის შენთან გატარებისა"], canvas.width / 2, canvas.height / 2, fontSize, lineHeight);
-        } else {
-            context.fillText("და მაინც, აქ ვარ და მიხარია რომ მაქვს შესაძლებლობა წამის შენთან გატარებისა", canvas.width/2, canvas.height/2);
-        }
-
-        opacity = opacity + 0.01;
-    }
-    if(frameNumber >= 2250 && frameNumber < 2500){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-
-        if (window.innerWidth < 600) {
-            drawTextWithLineBreaks(["და მაინც, აქ ვარ და მიხარია რომ მაქვს", "შესაძლებლობა წამის შენთან გატარებისა"], canvas.width / 2, canvas.height / 2, fontSize, lineHeight);
-        } else {
-            context.fillText("და მაინც, აქ ვარ და მიხარია რომ მაქვს შესაძლებლობა წამის შენთან გატარებისა", canvas.width/2, canvas.height/2);
-        }
-        
-        opacity = opacity - 0.01;
-    }
-
-    if(frameNumber == 2500){
-        opacity = 0;
-    }
-    if(frameNumber > 2500 && frameNumber < 99999){
-        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
-
-        if (window.innerWidth < 600) {
-            drawTextWithLineBreaks(["მიყვარხარ ანი, იმაზე მეტად ვიდრე", "დროისა და სივრცის დატევა შეუძლია ამ სამყაროს"], canvas.width / 2, canvas.height / 2, fontSize, lineHeight);
-        } else {
-            context.fillText("მიყვარხარ ანი, იმაზე მეტად ვიდრე დროისა და სივრცის დატევა შეუძლია ამ სამყაროს", canvas.width/2, canvas.height/2);
-        }
-
-        opacity = opacity + 0.01;
     }
     
-    if(frameNumber >= 2750 && frameNumber < 99999){
-        context.fillStyle = `rgba(45, 45, 255, ${secondOpacity})`;
-
-
-        if (window.innerWidth < 600) {
-            drawTextWithLineBreaks(["და ერთი სული მაქვს როდის გავატარებ ჩემს მთელ დროს", "იმ სივრცესა და სამყაროში, რომელიც სავსე იქნება შენით"], canvas.width / 2, (canvas.height/2 + 60), fontSize, lineHeight);
-        } else {
-            context.fillText("და ერთი სული მაქვს როდის გავატარებ ჩემს მთელ დროს იმ სივრცესა და სამყაროში, რომელიც სავსე იქნება შენით", canvas.width/2, (canvas.height/2 + 50));
-        }
-
-        secondOpacity = secondOpacity + 0.01;
+    // Text 2: 3 lines, display 120 frames (total 280)
+    if(frameNumber > 280 && frameNumber < 360){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მილიონობით", "ვარსკვლავებსა", "და გალაქტიკებს შორის"], canvas.width / 2, canvas.height / 2 - 40, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 360 && frameNumber < 480){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მილიონობით", "ვარსკვლავებსა", "და გალაქტიკებს შორის"], canvas.width / 2, canvas.height / 2 - 40, fontSize, lineHeight);
+    }
+    if(frameNumber >= 480 && frameNumber < 560){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მილიონობით", "ვარსკვლავებსა", "და გალაქტიკებს შორის"], canvas.width / 2, canvas.height / 2 - 40, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
     }
 
-    if(frameNumber >= 3000 && frameNumber < 99999){
-        context.fillStyle = `rgba(45, 45, 255, ${thirdOpacity})`;
-        context.fillText("შენ ჩემი ყველაფერი ხარ <3", canvas.width/2, (canvas.height/2 + 120));
-        thirdOpacity = thirdOpacity + 0.01;
+    if(frameNumber == 560){
+        opacity = 0;
+    }
+    
+    // Text 3: 4 lines, display 170 frames (total 330)
+    if(frameNumber > 560 && frameNumber < 640){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["რომ ვარ ცოცხალი", "და მეძლევა შანსი", "ამ სიცოცხლის შენთან", "გატარებისა"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 640 && frameNumber < 810){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["რომ ვარ ცოცხალი", "და მეძლევა შანსი", "ამ სიცოცხლის შენთან", "გატარებისა"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+    }
+    if(frameNumber >= 810 && frameNumber < 890){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["რომ ვარ ცოცხალი", "და მეძლევა შანსი", "ამ სიცოცხლის შენთან", "გატარებისა"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
+    }
 
-        button.style.display = "block";
-    }   
+    if(frameNumber == 890){
+        opacity = 0;
+    }
+    
+    // Text 4: 4 lines, display 170 frames (total 330)
+    if(frameNumber > 890 && frameNumber < 970){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["იმდენად", "დაუჯერებელ და", "წარმოუდგენელ", "სიზმარს გავს"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 970 && frameNumber < 1140){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["იმდენად", "დაუჯერებელ და", "წარმოუდგენელ", "სიზმარს გავს"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+    }
+    if(frameNumber >= 1140 && frameNumber < 1220){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["იმდენად", "დაუჯერებელ და", "წარმოუდგენელ", "სიზმარს გავს"], canvas.width/2, canvas.height/2 - 50, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
+    }
+
+    if(frameNumber == 1220){
+        opacity = 0;
+    }
+    
+    // Text 5: 4 lines, display 170 frames (total 330)
+    if(frameNumber > 1220 && frameNumber < 1300){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და მაინც, აქ ვარ", "და მიხარია რომ მაქვს", "შესაძლებლობა", "წამის შენთან გატარებისა"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 1300 && frameNumber < 1470){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და მაინც, აქ ვარ", "და მიხარია რომ მაქვს", "შესაძლებლობა", "წამის შენთან გატარებისა"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+    }
+    if(frameNumber >= 1470 && frameNumber < 1550){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და მაინც, აქ ვარ", "და მიხარია რომ მაქვს", "შესაძლებლობა", "წამის შენთან გატარებისა"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
+    }
+
+    if(frameNumber == 1550){
+        opacity = 0;
+    }
+    
+    // Text 6: 4 lines, display 170 frames (total 330)
+    if(frameNumber > 1550 && frameNumber < 1630){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მიყვარხარ ანი,", "იმაზე მეტად ვიდრე", "დროისა და სივრცის", "დატევა შეუძლია ამ სამყაროს"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 1630 && frameNumber < 1800){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მიყვარხარ ანი,", "იმაზე მეტად ვიდრე", "დროისა და სივრცის", "დატევა შეუძლია ამ სამყაროს"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+    }
+    if(frameNumber >= 1800 && frameNumber < 1880){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["მიყვარხარ ანი,", "იმაზე მეტად ვიდრე", "დროისა და სივრცის", "დატევა შეუძლია ამ სამყაროს"], canvas.width / 2, canvas.height / 2 - 50, fontSize, lineHeight);
+        opacity = opacity - 0.0125;
+    }
+    
+    if(frameNumber == 1880){
+        opacity = 0;
+    }
+    
+    // Text 7: 6 lines, display 220 frames (total 380)
+    if(frameNumber > 1880 && frameNumber < 1960){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და ერთი სული მაქვს", "როდის გავატარებ ჩემს", "მთელ დროს იმ სივრცესა", "და სამყაროში,", "რომელიც სავსე იქნება", "შენით"], canvas.width / 2, (canvas.height/2 - 60), fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 1960 && frameNumber < 2180){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და ერთი სული მაქვს", "როდის გავატარებ ჩემს", "მთელ დროს იმ სივრცესა", "და სამყაროში,", "რომელიც სავსე იქნება", "შენით"], canvas.width / 2, (canvas.height/2 - 60), fontSize, lineHeight);
+    }
+    if(frameNumber >= 2180 && frameNumber < 2260){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["და ერთი სული მაქვს", "როდის გავატარებ ჩემს", "მთელ დროს იმ სივრცესა", "და სამყაროში,", "რომელიც სავსე იქნება", "შენით"], canvas.width / 2, (canvas.height/2 - 60), fontSize, lineHeight);
+        opacity = opacity - 0.0125;
+    }
+
+    if(frameNumber == 2260){
+        opacity = 0;
+    }
+    
+    // Text 8: 2 lines, STAYS ON SCREEN (never fades out)
+    if(frameNumber > 2260 && frameNumber < 2340){
+        context.fillStyle = `rgba(45, 45, 255, ${opacity})`;
+        drawTextWithLineBreaks(["შენ ჩემი", "ყველაფერი ხარ <3"], canvas.width/2, canvas.height/2, fontSize, lineHeight);
+        opacity = opacity + 0.0125;
+    }
+    if(frameNumber >= 2340){
+        context.fillStyle = `rgba(45, 45, 255, 1)`;
+        drawTextWithLineBreaks(["შენ ჩემი", "ყველაფერი ხარ <3"], canvas.width/2, canvas.height/2, fontSize, lineHeight);
+    }
+
+    // Show the valentine scene after text stays for a bit
+    if(frameNumber >= 2940){
+        if (currentScene === 'intro') {
+            showValentineScene();
+        }
+    }
 
      // Reset the shadow effect after drawing the text
      context.shadowColor = "transparent";
@@ -226,7 +289,9 @@ function drawText() {
 }
 
 function draw() {
-    context.putImageData(baseFrame, 0, 0);
+    // Clear the canvas with dark background
+    context.fillStyle = "#111";
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
     drawStars();
     updateStars();
@@ -241,7 +306,4 @@ function draw() {
 window.addEventListener("resize", function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    baseFrame = context.getImageData(0, 0, window.innerWidth, window.innerHeight);
 });
-
-window.requestAnimationFrame(draw);
